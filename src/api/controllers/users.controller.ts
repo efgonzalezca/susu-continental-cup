@@ -98,6 +98,12 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
       cellphone
     } = <register>req.body;
 
+    const registrationDeadline = new Date('2024-06-20T17:00:00.000Z'); 
+    
+    if(new Date() > registrationDeadline) {
+      throw new ErrorHandler(423, 42302, 'Registration deadline reached');
+    }
+    
     const user = await UserService.exists(document);
     
     if(user) {
