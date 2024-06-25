@@ -20,6 +20,10 @@ export const updateMatch = async (req: Request, res: Response, next: NextFunctio
   const { id } = req.params;
   const { local_score, visitor_score } = req.body;
   try {
+    const matchToUpdate = await MatchService.findById(id)?.lean();
+    if(matchToUpdate && matchToUpdate.has_played) {
+      throw new Error('Action not allowed');
+    }
     let updatedMatch = await MatchService.updateById(id, local_score, visitor_score)?.lean();
     let users = await UserService.findAll()?.lean();
     let updatedUsers = [];
