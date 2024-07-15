@@ -39,6 +39,10 @@ export const userSchema = new Schema({
   selected_teams: {
     type: selected_teams
   },
+  podium_score: {
+    type: Number,
+    default: 0,
+  },
   is_active: {
     type: Boolean,
     default: false
