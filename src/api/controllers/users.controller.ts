@@ -78,11 +78,21 @@ export const modifyMatchFromUser = async (req: Request, res: Response, next: Nex
 
 export const getUsersRanking = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    let users = await UserService.findAll({score: true, names: true, surnames: true})?.lean();
+    let users = await UserService.findAll({score: true, podium_score: true, names: true, surnames: true})?.lean();
     logger.info('Read usermatches', getExtraParams(req));
+    if(!users) {
+      throw new Error('No records to users');
+    }
+    const usersRanking = users.map((user) => {
+      const userToRanking = {
+        ...user,
+        score: user.score + user.podium_score
+      }
+      return userToRanking;
+    })
     return res
       .status(200)
-      .json(users)
+      .json(usersRanking)
   } catch(err) {
     return next(err);
   }
